@@ -37,6 +37,14 @@ func TestSafeList(t *testing.T) {
 	if !(sl.Len() == 0) {
 		t.Error("error, RemoveAll")
 	}
+	// Remove
+	sl.RemoveAll()
+	e1 := sl.PushFront(NewDataItem("n0", 0))
+	sl.PushFront(NewDataItem("n1", 1))
+	item = sl.Remove(e1)
+	if !(sl.Len() == 1 && item != nil && item.(*DataItem).Name == "n0") {
+		t.Error("error, Remove")
+	}
 	// PopBack
 	sl.RemoveAll()
 	sl.PushFront(NewDataItem("n0", 0))
@@ -52,8 +60,33 @@ func TestSafeList(t *testing.T) {
 	sl.PushFront(NewDataItem("n1", 1))
 	sl.PushFront(NewDataItem("n2", 2))
 	items = sl.PopBackBy(10)
-	if !(sl.Len() == 0 && len(items) == 3 && items[1].(*DataItem).Name == "n1") {
+	if !(sl.Len() == 0 && len(items) == 3 && items[0].(*DataItem).Name == "n0") {
 		t.Error("error, PopBackBy")
+	}
+	// PopBackAll
+	sl.RemoveAll()
+	sl.PushFront(NewDataItem("n0", 0))
+	sl.PushFront(NewDataItem("n1", 1))
+	sl.PushFront(NewDataItem("n2", 2))
+	items = sl.PopBackAll()
+	if !(sl.Len() == 0 && len(items) == 3 && items[0].(*DataItem).Name == "n0") {
+		t.Error("error, PopBackAll")
+	}
+	// FrontAll
+	sl.RemoveAll()
+	sl.PushFront(NewDataItem("n0", 0))
+	sl.PushFront(NewDataItem("n1", 0))
+	items = sl.FrontAll()
+	if !(sl.Len() == 2 && len(items) == 2 && items[0].(*DataItem).Name == "n1" && items[1].(*DataItem).Name == "n0") {
+		t.Error("error, FrontAll")
+	}
+	// BackAll
+	sl.RemoveAll()
+	sl.PushFront(NewDataItem("n0", 0))
+	sl.PushFront(NewDataItem("n1", 0))
+	items = sl.BackAll()
+	if !(sl.Len() == 2 && len(items) == 2 && items[0].(*DataItem).Name == "n0" && items[1].(*DataItem).Name == "n1") {
+		t.Error("error, BackAll")
 	}
 	// Other
 	sl.RemoveAll()

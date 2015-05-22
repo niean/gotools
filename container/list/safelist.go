@@ -14,10 +14,11 @@ func NewSafeList() *SafeList {
 	return &SafeList{L: list.New()}
 }
 
-func (this *SafeList) PushFront(v interface{}) {
+func (this *SafeList) PushFront(v interface{}) *list.Element {
 	this.Lock()
-	this.L.PushFront(v)
+	e := this.L.PushFront(v)
 	this.Unlock()
+	return e
 }
 
 func (this *SafeList) PopBack() interface{} {
@@ -56,10 +57,67 @@ func (this *SafeList) PopBackBy(max int) []interface{} {
 	return items
 }
 
+func (this *SafeList) PopBackAll() []interface{} {
+	this.Lock()
+
+	count := this.len()
+	if count == 0 {
+		this.Unlock()
+		return []interface{}{}
+	}
+
+	items := make([]interface{}, 0, count)
+	for i := 0; i < count; i++ {
+		item := this.L.Remove(this.L.Back())
+		items = append(items, item)
+	}
+
+	this.Unlock()
+	return items
+}
+
+func (this *SafeList) Remove(e *list.Element) interface{} {
+	this.Lock()
+	defer this.Unlock()
+	return this.L.Remove(e)
+}
+
 func (this *SafeList) RemoveAll() {
 	this.Lock()
 	this.L = list.New()
 	this.Unlock()
+}
+
+func (this *SafeList) FrontAll() []interface{} {
+	this.RLock()
+	defer this.RUnlock()
+
+	count := this.len()
+	if count == 0 {
+		return []interface{}{}
+	}
+
+	items := make([]interface{}, 0, count)
+	for e := this.L.Front(); e != nil; e = e.Next() {
+		items = append(items, e.Value)
+	}
+	return items
+}
+
+func (this *SafeList) BackAll() []interface{} {
+	this.RLock()
+	defer this.RUnlock()
+
+	count := this.len()
+	if count == 0 {
+		return []interface{}{}
+	}
+
+	items := make([]interface{}, 0, count)
+	for e := this.L.Back(); e != nil; e = e.Prev() {
+		items = append(items, e.Value)
+	}
+	return items
 }
 
 func (this *SafeList) Front() interface{} {

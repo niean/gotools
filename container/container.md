@@ -13,6 +13,15 @@ container for golang
 	BenchmarkSafeListLimitedPopBack	 				1000000	       66.2 ns/op
 	BenchmarkSafeListLimitedPopBackConcurrent		1000000	       64.3 ns/op
 
+	// set.SafeSet Benchmark Test Result
+	BenchmarkSafeSetAdd	 							1000000	       1039 ns/op
+	BenchmarkSafeSetConcurrent	 					1000000	       623 ns/op
+	BenchmarkSafeSetRemove	 						1000000	       242 ns/op
+	BenchmarkSafeSetRemoveConcurrent	 			1000000	       219 ns/op
+	BenchmarkSafeSetContains	 					1000000	       191 ns/op
+	BenchmarkSafeSetContainsConcurrent	 			1000000	       176 ns/op
+	BenchmarkSafeSetSize	 						1000000	       28.6 ns/op
+	
 ```
 
 ## usage
