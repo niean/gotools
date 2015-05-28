@@ -22,9 +22,9 @@ func (this *SafeMap) Put(key string, val interface{}) {
 }
 
 func (this *SafeMap) Get(key string) (interface{}, bool) {
-	this.Lock()
+	this.RLock()
 	val, exists := this.M[key]
-	this.Unlock()
+	this.RUnlock()
 	return val, exists
 }
 
@@ -34,10 +34,31 @@ func (this *SafeMap) Remove(key string) {
 	this.Unlock()
 }
 
+func (this *SafeMap) GetAndRemove(key string) (interface{}, bool) {
+	this.Lock()
+	val, exists := this.M[key]
+	if exists {
+		delete(this.M, key)
+	}
+	this.Unlock()
+	return val, exists
+}
+
 func (this *SafeMap) Clear() {
 	this.Lock()
 	this.M = make(map[string]interface{})
 	this.Unlock()
+}
+
+func (this *SafeMap) Keys() []string {
+	this.RLock()
+	defer this.RUnlock()
+
+	keys := make([]string, 0)
+	for key, _ := range this.M {
+		keys = append(keys, key)
+	}
+	return keys
 }
 
 func (this *SafeMap) ContainsKey(key string) bool {

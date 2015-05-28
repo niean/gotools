@@ -40,6 +40,25 @@ func TestSafeMap(t *testing.T) {
 	if !(!found && sm.Size() == 1) {
 		t.Error("error, Remove")
 	}
+	// GetAndRemove
+	sm.Clear()
+	sm.Put(d1.Name, d1)
+	sm.Put(d2.Name, d2)
+	d, found = sm.GetAndRemove(d1.Name)
+	if !(found && d.(*DataStruct).Name == d1.Name && sm.Size() == 1) {
+		t.Error("error, GetAndRemove")
+	}
+	// Keys
+	sm.Clear()
+	sm.Put(d1.Name, d1)
+	sm.Put(d2.Name, d2)
+	sm.Put(d3.Name, d3)
+	keys := sm.Keys()
+	if !(len(keys) == 3 && ArrayContains(keys, d1.Name) &&
+		ArrayContains(keys, d2.Name) && ArrayContains(keys, d3.Name)) {
+		t.Error("error, Keys")
+	}
+
 	// ContainsKey
 	sm.Clear()
 	sm.Put(d1.Name, d1)
@@ -56,4 +75,13 @@ func TestSafeMap(t *testing.T) {
 	if sm.IsEmpty() {
 		t.Error("error, IsEmpty")
 	}
+}
+
+func ArrayContains(arr []string, item string) bool {
+	for _, key := range arr {
+		if key == item {
+			return true
+		}
+	}
+	return false
 }
