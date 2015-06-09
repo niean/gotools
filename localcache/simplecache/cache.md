@@ -13,10 +13,10 @@ an in-memory key:value cache library for Go, suitable for single-machine applica
 ```
 
 ## usage
-```
+```go
 	import (
 		"fmt"
-		"github.com/pmylund/go-cache"
+		cache "github.com/niean/gotools/cache/simplecache"
 		"time"
 	)
 
