@@ -8,7 +8,9 @@ statistics utils for golang
 	BenchmarkSCounterBaseIncrConcurrent	 			5000000	        51.1 ns/op
 	BenchmarkSCounterQpsIncr	 					5000000	        51.0 ns/op
 	BenchmarkSCounterQpsIncrConcurrent	 			5000000	        51.7 ns/op
-
+    // proc.filter Benchmark Test Result
+    BenchmarkFilter                                 5000000         85.5 ns/op
+    BenchmarkFilterConcurrent                       5000000         88.1 ns/op
 ```
 
 ## usage
