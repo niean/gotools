@@ -8,17 +8,11 @@ import (
 
 func TestSemaphore(t *testing.T) {
 	sema := NewSemaphore(2)
-	sema.Acquire()
-	sema.Acquire()
-
-	if sema.AvailablePermits() != 0 {
-		t.Error("AvailablePermits, AvailablePermits")
+	if !(sema.TryAcquire() && sema.TryAcquire() && !sema.TryAcquire()) {
+		t.Error("error, TryAcquire")
 	}
 
 	sema.Release()
-	if sema.AvailablePermits() != 1 {
-		t.Error("AvailablePermits, AvailablePermits")
-	}
 	sema.Release()
 }
 
@@ -27,8 +21,9 @@ func BenchmarkSemaphore(b *testing.B) {
 	sema := NewSemaphore(1)
 	b.StartTimer()
 	for i := 0; i < b.N; i++ {
-		sema.Acquire()
-		sema.Release()
+		if sema.TryAcquire() {
+			sema.Release()
+		}
 	}
 }
 
@@ -43,8 +38,9 @@ func BenchmarkSemaphoreConcurrent(b *testing.B) {
 	for i := 0; i < workers; i++ {
 		go func() {
 			for i := 0; i < each; i++ {
-				sema.Acquire()
-				sema.Release()
+				if sema.TryAcquire() {
+					sema.Release()
+				}
 			}
 			wg.Done()
 		}()
