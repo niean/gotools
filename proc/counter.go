@@ -9,6 +9,7 @@ import (
 const (
 	DefaultOtherMaxSize      = 100
 	DefaultSCounterQpsPeriod = 1
+	DefaultSMathBasePeriod   = 1
 )
 
 // basic counter
