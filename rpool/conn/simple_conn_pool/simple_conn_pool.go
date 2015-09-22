@@ -26,6 +26,7 @@ type ConnPool struct {
 	MaxConns int32
 	MaxIdle  int32
 	Cnt      int64
+	Ts       int64
 	New      func(name string) (NConn, error)
 
 	active int32
@@ -34,15 +35,16 @@ type ConnPool struct {
 }
 
 func NewConnPool(name string, address string, maxConns int32, maxIdle int32) *ConnPool {
-	return &ConnPool{Name: name, Address: address, MaxConns: maxConns, MaxIdle: maxIdle, Cnt: 0, all: make(map[string]NConn)}
+	return &ConnPool{Name: name, Address: address, MaxConns: maxConns, MaxIdle: maxIdle,
+		Cnt: 0, Ts: time.Now().Unix(), all: make(map[string]NConn)}
 }
 
 func (this *ConnPool) Proc() string {
 	this.RLock()
 	defer this.RUnlock()
 
-	return fmt.Sprintf("Name:%s,Cnt:%d,active:%d,all:%d,free:%d",
-		this.Name, this.Cnt, this.active, len(this.all), len(this.free))
+	return fmt.Sprintf("Name:%s,Ts:%s,Cnt:%d,active:%d,all:%d,free:%d",
+		this.Name, time.Unix(this.Ts, 0).Format("2006-01-02T15:04:05Z"), this.Cnt, this.active, len(this.all), len(this.free))
 }
 
 func (this *ConnPool) Fetch() (NConn, error) {
